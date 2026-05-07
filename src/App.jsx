@@ -99,13 +99,13 @@ function saveSession(session) {
 }
 
 // ── AI API ──
-async function callGemini(systemPrompt, userMessage, retries = 2) {
+async function callGemini(systemPrompt, userMessage, retries = 4) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) throw new Error("VITE_GEMINI_API_KEY is not set in .env");
   const { GoogleGenerativeAI } = await import("@google/generative-ai");
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
     systemInstruction: systemPrompt,
   });
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -115,7 +115,7 @@ async function callGemini(systemPrompt, userMessage, retries = 2) {
     } catch (err) {
       const is503 = err?.message?.includes("503") || err?.status === 503;
       if (is503 && attempt < retries) {
-        await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
+        await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
         continue;
       }
       throw err;
