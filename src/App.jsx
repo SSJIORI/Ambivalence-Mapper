@@ -143,7 +143,7 @@ Format:
   ],
   "closingReflection": "one sentence acknowledgment of what the person held today, warm and non-prescriptive"
 }`;
-  const raw = await callClaude(system, journalText);
+  const raw = await callGemini(system, journalText);
   try { return JSON.parse(raw.replace(/```json|```/g, "").trim()); }
   catch { return getMockTensions(); }
 }
@@ -153,7 +153,7 @@ async function getDepthResponse(tension, question, answer) {
 The user is exploring the tension between "${tension.toward}" and "${tension.away}".
 They answered a depth question. Offer ONE follow-up question that goes deeper — not broader.
 Keep it under 20 words. No preamble. Just the question.`;
-  return await callClaude(system, `Question asked: "${question}"\nTheir answer: "${answer}"`);
+  return await callGemini(system, `Question asked: "${question}"\nTheir answer: "${answer}"`);
 }
 
 function getMockTensions() {
