@@ -105,7 +105,7 @@ async function callGemini(systemPrompt, userMessage, retries = 2) {
   const { GoogleGenerativeAI } = await import("@google/generative-ai");
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-flash",
+    model: "gemini-2.0-flash",
     systemInstruction: systemPrompt,
   });
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -143,9 +143,10 @@ Format:
   ],
   "closingReflection": "one sentence acknowledgment of what the person held today, warm and non-prescriptive"
 }`;
-  const raw = await callGemini(system, journalText);
-  try { return JSON.parse(raw.replace(/```json|```/g, "").trim()); }
-  catch { return getMockTensions(); }
+  try {
+    const raw = await callGemini(system, journalText);
+    return JSON.parse(raw.replace(/```json|```/g, "").trim());
+  } catch { return getMockTensions(); }
 }
 
 async function getDepthResponse(tension, question, answer) {
